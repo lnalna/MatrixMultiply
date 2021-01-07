@@ -9,7 +9,6 @@ public class MatrixUtil {
 
     public static int[][] concurrentMultiply0(int[][] matrixA, int[][] matrixB, ExecutorService executor) throws InterruptedException, ExecutionException {
         final int matrixSize = matrixA.length;
-        final int[][] matrixC = new int[matrixSize][matrixSize];
 
         class ColumnMultiplyResult {
             private final int col;
@@ -44,6 +43,7 @@ public class MatrixUtil {
             });
         }
 
+        final int[][] matrixC = new int[matrixSize][matrixSize];
         for (int i = 0; i < matrixSize; i++) {
             ColumnMultiplyResult res = completionService.take().get();
             for (int k = 0; k < matrixSize; k++) {
@@ -56,9 +56,8 @@ public class MatrixUtil {
 
     public static int[][] concurrentMultiply1(int[][] matrixA, int[][] matrixB, ExecutorService executor) throws InterruptedException, ExecutionException {
         final int matrixSize = matrixA.length;
-        final int[][] matrixC = new int[matrixSize][];
-
         final int[][] matrixBT = new int[matrixSize][matrixSize];
+
         for (int i = 0; i < matrixSize; i++) {
             for (int j = 0; j < matrixSize; j++) {
                 matrixBT[i][j] = matrixB[j][i];
@@ -66,6 +65,7 @@ public class MatrixUtil {
         }
 
         List<Callable<Void>> tasks = new ArrayList<>(matrixSize);
+        final int[][] matrixC = new int[matrixSize][];
         for (int i = 0; i < matrixSize; i++) {
             final int row = i;
             tasks.add(() -> {
@@ -107,7 +107,6 @@ public class MatrixUtil {
 
     public static int[][] singleThreadMultiply1(int[][] matrixA, int[][] matrixB) {
         final int matrixSize = matrixA.length;
-        final int[][] matrixC = new int[matrixSize][matrixSize];
         final int[][] matrixBT = new int[matrixSize][matrixSize];
 
         for (int i = 0; i < matrixSize; i++) {
@@ -115,6 +114,8 @@ public class MatrixUtil {
                 matrixBT[j][i] = matrixB[i][j];
             }
         }
+
+        final int[][] matrixC = new int[matrixSize][matrixSize];
         for (int i = 0; i < matrixSize; i++) {
             for (int j = 0; j < matrixSize; j++) {
                 int sum = 0;
@@ -147,7 +148,6 @@ public class MatrixUtil {
             }
         }
         return matrixC;
-
     }
 
     //самый быстрый однопоточный вариант
